@@ -5,9 +5,13 @@ from telebot.types import ReplyKeyboardMarkup
 token = '5246882341:AAHdcgZKCKvytKWR1-IyP8Pl6jkmBiIcJRU'
 bot = telebot.TeleBot(token)
 
+# в терминале пишем pip install pytelegrambotapi вначале и только после этого запускаем программу. Если выдает ошибку
+# то удаляем установку вначале pip uninstall telebot , а затем pip uninstall pytelegrambotapi
+# и заново пишем pip install pytelegrambotapi - тогда файл запускается и все работает.
 
 # Эта клавиатура появляется при старте. Сюда надо добавить кнопку для авторизации на сайте, разобраться как работает
 # https://t.me/x1test1Bot вот здесь описание
+
 def webAppKeyboardInline():  # создание inline-клавиатуры с webapp кнопкой
     keyboard = types.InlineKeyboardMarkup(row_width=1)  # создаем клавиатуру inline
     webApp = types.WebAppInfo("https://telegram.mihailgok.ru")  # создаем webappinfo - формат хранения url
