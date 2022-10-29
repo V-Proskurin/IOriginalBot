@@ -5,16 +5,6 @@ from telebot.types import ReplyKeyboardMarkup
 token = '5246882341:AAHdcgZKCKvytKWR1-IyP8Pl6jkmBiIcJRU'
 bot = telebot.TeleBot(token)
 
-# Эта клавиатура пока не используется
-def webAppKeyboard():  # создание клавиатуры с webapp кнопкой, сейчас не работает
-    keyboard = types.ReplyKeyboardMarkup(row_width=1)  # создаем клавиатуру
-    webApp = types.WebAppInfo("https://telegram.mihailgok.ru")  # создаем webappinfo - формат хранения url
-    webAppGame = types.WebAppInfo("https://games.mihailgok.ru")  # создаем webappinfo - формат хранения url
-    one_butt = types.KeyboardButton(text="Тестовая страница", web_app=webApp)  # создаем кнопку типа webapp
-    two_butt = types.KeyboardButton(text="Игра", web_app=webAppGame)  # создаем кнопку типа webapp
-    keyboard.add(one_butt, two_butt)  # добавляем кнопки в клавиатуру
-
-    return keyboard  # возвращаем клавиатуру
 
 # Эта клавиатура появляется при старте. Сюда надо добавить кнопку для авторизации на сайте, разобраться как работает
 # https://t.me/x1test1Bot вот здесь описание
