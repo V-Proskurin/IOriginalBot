@@ -50,7 +50,7 @@ def button_message(message):
 @bot.message_handler(content_types=['text'])
 def message_reply(message):
     if message.text == "Жми":
-        bot.send_message(message.chat.id, "Зачем нажал?")
+        bot.send_message(message.chat.id, "Зачем нажал???")
     if message.text == "Привет":
         bot.send_message(message.from_user.id, "Привет, чем я могу тебе помочь?")
     elif message.text == "/help":
