@@ -27,7 +27,7 @@ def webAppKeyboardInline():  # создание inline-клавиатуры с w
     webAppGame = types.WebAppInfo("https://games.mihailgok.ru")  # создаем webappinfo - формат хранения url
     one = types.InlineKeyboardButton(text="X1team.ru", web_app=webApp)  # создаем кнопку типа webapp
     two = types.InlineKeyboardButton(text="Игра", web_app=webAppGame)  # создаем кнопку типа webapp
-    three = types.InlineKeyboardButton(text="Жми", callback_data="Жми")  # работает
+    three = types.InlineKeyboardButton(text="Авторизоваться", callback_data="Авторизоваться")  # работает
     four = types.InlineKeyboardButton(text="Твои данные на сайте", web_app=webApp2)
     # four = types.InlineKeyboardButton(text="Войти", login_url=)  # получить урл у Андрея
     keyboard.add(one, two, three, four)  # добавляем кнопку в клавиатуру
@@ -40,6 +40,15 @@ def start_fun(message):
     bot.send_message(message.chat.id, 'Привет, ✌️")\nНажми на кнопки внизу.', parse_mode="Markdown",
                      reply_markup=webAppKeyboardInline())  # отправляем сообщение c нужной клавиатурой
 
+
+# Handle '/авторизоваться' '/Авторизоваться'
+@bot.message_handler(commands=['авторизоваться', 'Авторизоваться'])
+def send_welcome(message):
+    msg = bot.reply_to(message, """\
+Как Вас зовут?
+""")
+    bot.register_next_step_handler(msg, process_name_step)
+
 # это надо добавлять, чтобы просле нажатия кнопки в инлайн клавиатуре (появляется после /start)
 # мы обрабатывали ответ нажатый на клавиатуре. Не работает, если просто Жми написать текстом, только для кнопки
 @bot.callback_query_handler(func=lambda call: True)
@@ -51,12 +60,12 @@ def callback_inline(call):
     except Exception as e:
         print(repr(e))
 
-@bot.message_handler(content_types="web_app_data")  # получаем отправленные данные
-def answer(webAppMes):
-    print(webAppMes)  # вся информация о сообщении
-    print(webAppMes.web_app_data.data)  # конкретно то что мы передали в бота
-    bot.send_message(webAppMes.chat.id, f"получили инофрмацию из веб-приложения: {webAppMes.web_app_data.data}")
-    # отправляем сообщение в ответ на отправку данных из веб-приложения
+# @bot.message_handler(content_types="web_app_data")  # получаем отправленные данные
+# def answer(webAppMes):
+#     print(webAppMes)  # вся информация о сообщении
+#     print(webAppMes.web_app_data.data)  # конкретно то что мы передали в бота
+#     bot.send_message(webAppMes.chat.id, f"получили инофрмацию из веб-приложения: {webAppMes.web_app_data.data}")
+#     # отправляем сообщение в ответ на отправку данных из веб-приложения
 
 ######################База данных wordpress#####################
 
