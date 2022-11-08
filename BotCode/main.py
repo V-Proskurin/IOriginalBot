@@ -27,7 +27,7 @@ def webAppKeyboardInline():  # создание inline-клавиатуры с w
     webAppGame = types.WebAppInfo("https://games.mihailgok.ru")  # создаем webappinfo - формат хранения url
     one = types.InlineKeyboardButton(text="X1team.ru", web_app=webApp)  # создаем кнопку типа webapp
     two = types.InlineKeyboardButton(text="Игра", web_app=webAppGame)  # создаем кнопку типа webapp
-    three = types.InlineKeyboardButton(text="Авторизоваться", callback_data="Авторизоваться")  # работает
+    three = types.InlineKeyboardButton(text="Авторизоваться", callback_data="Авторизоваться")  # не работает, не запускает команду
     four = types.InlineKeyboardButton(text="Твои данные на сайте", web_app=webApp2)
     # four = types.InlineKeyboardButton(text="Войти", login_url=)  # получить урл у Андрея
     keyboard.add(one, two, three, four)  # добавляем кнопку в клавиатуру
@@ -39,7 +39,6 @@ def webAppKeyboardInline():  # создание inline-клавиатуры с w
 def start_fun(message):
     bot.send_message(message.chat.id, 'Привет, ✌️")\nНажми на кнопки внизу.', parse_mode="Markdown",
                      reply_markup=webAppKeyboardInline())  # отправляем сообщение c нужной клавиатурой
-
 
 # Handle '/авторизоваться' '/Авторизоваться'
 @bot.message_handler(commands=['авторизоваться', 'Авторизоваться'])
@@ -61,6 +60,7 @@ def process_name_step(message):
     except Exception as e:
         bot.reply_to(message, 'oooops')
 
+
 def webAppKeyboardInline2():  # создание inline-клавиатуры с webapp кнопкой
     keyboard = types.InlineKeyboardMarkup(row_width=1)  # создаем клавиатуру inline
     webApp = types.WebAppInfo("https://x1team.ru/")
@@ -76,10 +76,19 @@ def process_last_name_step(message):
         last_name = message.text
         user = user_dict[user_id]
         user.last_name = last_name
-        msg = bot.reply_to(message, 'What is your gender', reply_markup=webAppKeyboardInline2())
-
+        msg = bot.reply_to(message, 'Спасибо!', reply_markup=webAppKeyboardInline2())
     except Exception as e:
         bot.reply_to(message, 'oooops')
+
+@bot.callback_query_handler(func=lambda call: True)
+def callback_inline(call):
+    try:
+        if call.message:
+            if call.data == "Авторизоваться" or "авторизоваться":
+                bot.send_message(call.message.chat.id, "Авторизация не доделана, не можем функцию вызвать")
+                #send_welcome() не работает
+    except Exception as e:
+        print(repr(e))
 
 # Это какое-то кэширование. Записывает в файл. Возможно надо чистить, а то завалит память мусором.
 # Enable saving next step handlers to file "./.handlers-saves/step.save".
