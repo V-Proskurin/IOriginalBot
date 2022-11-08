@@ -56,7 +56,7 @@ def process_name_step(message):
         name = message.text
         user = User(name)
         user_dict[user_id] = user
-        msg = bot.reply_to(message, 'Введите фамилию")
+        msg = bot.reply_to(message, "Введите фамилию")
         bot.register_next_step_handler(msg, process_last_name_step)
     except Exception as e:
         bot.reply_to(message, 'oooops')
