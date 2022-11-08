@@ -13,9 +13,9 @@ bot = telebot.TeleBot(token)
 user_dict = {}
 
 class User:
-    def __init__(self, first_name):
-        self.first_name = first_name
-        self.last_name = ''
+    def __init__(self, name):
+        self.name = name
+        self.last_name = None
 
 # Эта клавиатура появляется при старте. Сюда надо добавить кнопку для авторизации на сайте, разобраться как работает
 # https://t.me/x1test1Bot вот здесь описание
@@ -49,7 +49,37 @@ def send_welcome(message):
 """)
     bot.register_next_step_handler(msg, process_name_step)
 
+def process_name_step(message):
+    try:
+        # chat_id = message.chat.id вместо номера чата поставим номер пользователя
+        user_id = message.from_user.id
+        name = message.text
+        user = User(name)
+        user_dict[user_id] = user
+        msg = bot.reply_to(message, 'Введите фамилию")
+        bot.register_next_step_handler(msg, process_last_name_step)
+    except Exception as e:
+        bot.reply_to(message, 'oooops')
 
+def webAppKeyboardInline2():  # создание inline-клавиатуры с webapp кнопкой
+    keyboard = types.InlineKeyboardMarkup(row_width=1)  # создаем клавиатуру inline
+    webApp = types.WebAppInfo("https://x1team.ru/")
+    one = types.InlineKeyboardButton(text="X1team.ru", web_app=webApp)  # создаем кнопку типа webapp
+    # four = types.InlineKeyboardButton(text="Войти", login_url=)  # получить урл у Андрея
+    keyboard.add(one)  # добавляем кнопку в клавиатуру
+
+    return keyboard  # возвращаем клавиатуру
+
+def process_last_name_step(message):
+    try:
+        user_id = message.from_user.id
+        last_name = message.text
+        user = user_dict[user_id]
+        user.last_name = last_name
+        msg = bot.reply_to(message, 'What is your gender', reply_markup=webAppKeyboardInline2())
+
+    except Exception as e:
+        bot.reply_to(message, 'oooops')
 
 # Это какое-то кэширование. Записывает в файл. Возможно надо чистить, а то завалит память мусором.
 # Enable saving next step handlers to file "./.handlers-saves/step.save".
