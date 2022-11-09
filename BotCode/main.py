@@ -86,9 +86,7 @@ def callback_inline(call):
         if call.message:
             if call.data == "Авторизоваться" or "авторизоваться":
                 # bot.send_message(call.message.chat.id, "Авторизация не доделана, не можем функцию вызвать")
-                msg = bot.send_message(call.message.chat.id, """\
-Как Вас зовут?
-""")
+                msg = bot.send_message(call.message.chat.id, "Как Вас зовут?")
                 bot.register_next_step_handler(msg, process_name_step)
                 #send_welcome()
     except Exception as e:
