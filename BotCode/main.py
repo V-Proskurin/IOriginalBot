@@ -9,7 +9,7 @@ bot = telebot.TeleBot(token)
 # то удаляем установку вначале pip uninstall telebot , а затем pip uninstall pytelegrambotapi
 # и заново пишем pip install pytelegrambotapi - тогда файл запускается и все работает.
 
-#сохраняем данные пользователя вначале в программе
+#сохраняем данные пользователя вначале в программе/
 user_dict = {}
 
 class User:
@@ -39,6 +39,19 @@ def webAppKeyboardInline():  # создание inline-клавиатуры с w
 def start_fun(message):
     bot.send_message(message.chat.id, 'Привет, ✌️")\nНажми на кнопки внизу.', parse_mode="Markdown",
                      reply_markup=webAppKeyboardInline())  # отправляем сообщение c нужной клавиатурой
+
+@bot.callback_query_handler(func=lambda call: True)
+def callback_inline(call):
+    try:
+        if call.message:
+            if call.data == "Авторизоваться" or "авторизоваться":
+                # bot.send_message(call.message.chat.id, "Авторизация не доделана, не можем функцию вызвать")
+                msg = bot.send_message(call.message.chat.id, "Как Вас зовут?")
+                bot.register_next_step_handler(msg, process_name_step)
+                #send_welcome()
+    except Exception as e:
+        print(repr(e))
+
 
 # Handle '/авторизоваться' '/Авторизоваться'
 @bot.message_handler(commands=['авторизоваться', 'Авторизоваться'])
@@ -80,17 +93,7 @@ def process_last_name_step(message):
     except Exception as e:
         bot.reply_to(message, 'oooops')
 
-@bot.callback_query_handler(func=lambda call: True)
-def callback_inline(call):
-    try:
-        if call.message:
-            if call.data == "Авторизоваться" or "авторизоваться":
-                # bot.send_message(call.message.chat.id, "Авторизация не доделана, не можем функцию вызвать")
-                msg = bot.send_message(call.message.chat.id, "Как Вас зовут?")
-                bot.register_next_step_handler(msg, process_name_step)
-                #send_welcome()
-    except Exception as e:
-        print(repr(e))
+
 
 # Это какое-то кэширование. Записывает в файл. Возможно надо чистить, а то завалит память мусором.
 # Enable saving next step handlers to file "./.handlers-saves/step.save".
