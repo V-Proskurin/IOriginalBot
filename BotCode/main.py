@@ -9,7 +9,7 @@ bot = telebot.TeleBot(token)
 # то удаляем установку вначале pip uninstall telebot , а затем pip uninstall pytelegrambotapi
 # и заново пишем pip install pytelegrambotapi - тогда файл запускается и все работает.
 
-#сохраняем данные пользователя вначале в программе уву ы примере пошагового бота https://github.com/eternnoir/pyTelegramBotAPI/blob/master/examples/step_example.py
+#сохраняем данные пользователя вначале в программе как в примере пошагового бота https://github.com/eternnoir/pyTelegramBotAPI/blob/master/examples/step_example.py
 user_dict = {}
 
 class User:
