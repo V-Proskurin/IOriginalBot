@@ -49,7 +49,7 @@ def callback_inline(call):
         if call.message:
             if call.data == "Авторизоваться" or "авторизоваться":
                 msg = bot.send_message(call.message.chat.id, "Как Вас зовут?")
-                bot.register_next_step_handler(msg, process_name_step)
+                bot.register_next_step_handler(msg, process__name_step)
     except Exception as e:
         print(repr(e))
 
@@ -60,10 +60,10 @@ def send_welcome(message):
     msg = bot.reply_to(message, """\
 Как Вас зовут?
 """)
-    bot.register_next_step_handler(msg, process_name_step)
+    bot.register_next_step_handler(msg, process__name_step)
 
 # Пользователь отвечает и мы записываем все в user_dict
-def process_name_step(message):
+def process__name_step(message):
     try:
         # chat_id = message.chat.id вместо номера чата поставим номер пользователя
         user_id = message.from_user.id
