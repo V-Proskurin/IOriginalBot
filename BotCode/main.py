@@ -9,7 +9,7 @@ bot = telebot.TeleBot(token)
 # то удаляем установку вначале pip uninstall telebot , а затем pip uninstall pytelegrambotapi
 # и заново пишем pip install pytelegrambotapi - тогда файл запускается и все работает.
 
-#сохраняем данные пользователя вначале в программе/
+#сохраняем данные пользователя вначале в программе уву ы примере пошагового бота https://github.com/eternnoir/pyTelegramBotAPI/blob/master/examples/step_example.py
 user_dict = {}
 
 class User:
@@ -27,7 +27,7 @@ def webAppKeyboardInline():  # создание inline-клавиатуры с w
     webAppGame = types.WebAppInfo("https://games.mihailgok.ru")  # создаем webappinfo - формат хранения url
     one = types.InlineKeyboardButton(text="X1team.ru", web_app=webApp)  # создаем кнопку типа webapp
     two = types.InlineKeyboardButton(text="Игра", web_app=webAppGame)  # создаем кнопку типа webapp
-    three = types.InlineKeyboardButton(text="Авторизоваться", callback_data="Авторизоваться")  # не работает, не запускает команду
+    three = types.InlineKeyboardButton(text="Авторизоваться", callback_data="Авторизоваться")  # работает, не запускает команду
     four = types.InlineKeyboardButton(text="Твои данные на сайте", web_app=webApp2)
     # four = types.InlineKeyboardButton(text="Войти", login_url=)  # получить урл у Андрея
     keyboard.add(one, two, three, four)  # добавляем кнопку в клавиатуру
@@ -40,15 +40,16 @@ def start_fun(message):
     bot.send_message(message.chat.id, 'Привет, ✌️")\nНажми на кнопки внизу.', parse_mode="Markdown",
                      reply_markup=webAppKeyboardInline())  # отправляем сообщение c нужной клавиатурой
 
+
+# Если нажал в первой клавиатуре Авторизоваться, то выполняем логику авторизоваться и после Имя бросаем на второй шаг
+# инструкция пощагового бота https://github.com/eternnoir/pyTelegramBotAPI/blob/master/examples/step_example.py
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
     try:
         if call.message:
             if call.data == "Авторизоваться" or "авторизоваться":
-                # bot.send_message(call.message.chat.id, "Авторизация не доделана, не можем функцию вызвать")
                 msg = bot.send_message(call.message.chat.id, "Как Вас зовут?")
                 bot.register_next_step_handler(msg, process_name_step)
-                #send_welcome()
     except Exception as e:
         print(repr(e))
 
@@ -61,6 +62,7 @@ def send_welcome(message):
 """)
     bot.register_next_step_handler(msg, process_name_step)
 
+# Пользователь отвечает и мы записываем все в user_dict
 def process_name_step(message):
     try:
         # chat_id = message.chat.id вместо номера чата поставим номер пользователя
