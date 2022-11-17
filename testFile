@@ -1,3 +1,0 @@
-from BotCode.main import plus
-print(plus(4, 4)
-print('второй файл')
