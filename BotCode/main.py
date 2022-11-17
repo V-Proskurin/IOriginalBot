@@ -1,25 +1,11 @@
 import telebot
-#import mysql.connector
+import mysql.connector
 from telebot import types
 from telebot.types import ReplyKeyboardMarkup
 
 token = '5246882341:AAHdcgZKCKvytKWR1-IyP8Pl6jkmBiIcJRU'
 bot = telebot.TeleBot(token)
 
-# в терминале пишем pip install pytelegrambotapi вначале и только после этого запускаем программу. Если выдает ошибку
-# то удаляем установку вначале pip uninstall telebot , а затем pip uninstall pytelegrambotapi
-# и заново пишем pip install pytelegrambotapi - тогда файл запускается и все работает.
-# https://pythonchik.ru/okruzhenie-i-pakety/virtualnoe-okruzhenie-python-venv ставим виртуальное окружение и запускаем
-# python -m venv venv
-# venv\Scripts\activate.bat
-# !!!!! Не работает Проверить успешность активации можно по приглашению оболочки. Она будет выглядеть так:
-#(venv) root@purplegate:/var/test#
-
-# !!!! Закончив работу в виртуальной среде, вы можете отключить ее, выполнив консольную команду: deactivate
-
-# НЕ РАБОТАЕТ. И .venv\Scripts\deactivate.bat не работает
-
-#pip install mysql-connector-python - установил коннектор MYSQL
 
 #сохраняем данные пользователя вначале в программе как в примере пошагового бота https://github.com/eternnoir/pyTelegramBotAPI/blob/master/examples/step_example.py
 user_dict = {}

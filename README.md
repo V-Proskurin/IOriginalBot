@@ -1,11 +1,18 @@
 # IOriginalBot
 BotOriginX1
 Тестовый проект для понимания Git и для бота для X1
-Надо понять как вставлять видео задания в коммиты?
-Как подключить бота на телеграмм к коммитам GitHub
-Как добавить тег в коммит?
-Максим поменял файл
-добавил #1  тег для привязки к первому issue
-второе изменение #1
-pip install pylint добавил проверку синтаксиса
-12456
+# https://pythonchik.ru/okruzhenie-i-pakety/virtualnoe-okruzhenie-python-venv ставим виртуальное окружение и запускаем
+# python -m venv venv
+# venv\Scripts\activate.bat
+# Проверить успешность активации можно по приглашению оболочки. Она будет выглядеть так:
+# (venv) PS C:\Users\mailv\Documents\GitVSCode\IOriginalBot>
+
+# Закончив работу в виртуальной среде, вы можете отключить ее, выполнив консольную команду: deactivate
+
+# в терминале пишем pip install pytelegrambotapi вначале и только после этого запускаем программу. Если выдает ошибку
+# то удаляем установку вначале pip uninstall telebot , а затем pip uninstall pytelegrambotapi
+# и заново пишем pip install pytelegrambotapi - тогда файл запускается и все работает.
+
+#pip install mysql-connector-python - установил коннектор MYSQL
+
+#pip list - проверка, что все стоит
