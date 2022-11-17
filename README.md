@@ -16,3 +16,9 @@ BotOriginX1
 #pip install mysql-connector-python - установил коннектор MYSQL
 
 #pip list - проверка, что все стоит
+
+<!-- Если надо будет уже готовый код слить с уже готовым репозиторием, то вроде как надо:
+…or push an existing repository from the command line
+git remote add origin https://github.com/V-Proskurin/https---github.com-V-Proskurin-DBBOT.git
+git branch -M main
+git push -u origin main -->
