@@ -1,5 +1,5 @@
 import telebot
-import mysql.connector
+#import mysql.connector
 from telebot import types
 from telebot.types import ReplyKeyboardMarkup
 
@@ -10,8 +10,8 @@ bot = telebot.TeleBot(token)
 # то удаляем установку вначале pip uninstall telebot , а затем pip uninstall pytelegrambotapi
 # и заново пишем pip install pytelegrambotapi - тогда файл запускается и все работает.
 # https://pythonchik.ru/okruzhenie-i-pakety/virtualnoe-okruzhenie-python-venv ставим виртуальное окружение и запускаем
-# python -m venv .venv
-# .venv\Scripts\activate.bat
+# python -m venv venv
+# venv\Scripts\activate.bat
 # !!!!! Не работает Проверить успешность активации можно по приглашению оболочки. Она будет выглядеть так:
 #(venv) root@purplegate:/var/test#
 
