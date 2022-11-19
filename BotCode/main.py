@@ -10,10 +10,23 @@ mydb = mysql.connector.connect(
   host="localhost",
   user="bot",
   password="bot123",
-  port="3306"
+  port="3306",
+  database="botdb"
 )
+# проверка, что к базе подключился
+#print(mydb)
 
-#print(mydb) - проверка, что к базе подключился
+#создаем БД
+mycursor = mydb.cursor()
+#создали БД
+#mycursor.execute("CREATE DATABASE botdb")
+
+#создаем таблицу
+#mycursor.execute("CREATE TABLE customers (name VARCHAR(255), last_name VARCHAR(255))")
+
+#в таблице обязательно делаем ключ: primary key - номер записи автоматический
+mycursor.execute("ALTER TABLE customers ADD COLUMN (id INT AUTO_INCREMENT PRIMARY KEY, user_login VARCHAR(255), user_nicename VARCHAR(255), user_email VARCHAR(255), nickname VARCHAR(255), first_name VARCHAR(255), wptelegram_user_id INT, wptelegram_username VARCHAR(255))")
+
 #сохраняем данные пользователя вначале в программе как в примере пошагового бота https://github.com/eternnoir/pyTelegramBotAPI/blob/master/examples/step_example.py
 user_dict = {}
 
