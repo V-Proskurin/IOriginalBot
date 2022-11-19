@@ -6,7 +6,14 @@ from telebot.types import ReplyKeyboardMarkup
 token = '5246882341:AAHdcgZKCKvytKWR1-IyP8Pl6jkmBiIcJRU'
 bot = telebot.TeleBot(token)
 
+mydb = mysql.connector.connect(
+  host="localhost",
+  user="bot",
+  password="bot123",
+  port="3306"
+)
 
+#print(mydb) - проверка, что к базе подключился
 #сохраняем данные пользователя вначале в программе как в примере пошагового бота https://github.com/eternnoir/pyTelegramBotAPI/blob/master/examples/step_example.py
 user_dict = {}
 
