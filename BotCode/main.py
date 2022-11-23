@@ -80,11 +80,39 @@ def callback_inline(call):
     try:
         if call.message:
             if call.data == "Авторизоваться" or "авторизоваться":
-                msg = bot.send_message(call.message.chat.id, "Как Вас зовут?")
-                bot.register_next_step_handler(msg, process__name_step)
+                print(1)
+                #!!!! Не выполняет дальше эту функцию
+                def check(message):
+                    try:
+                        user_id = message.from_user.id
+                        sql = "SELECT * FROM customers WHERE wptelegram_user_id = %s"
+                        adr = (user_id, )
+                        mycursor.execute(sql, adr)
+                        myresult = mycursor.fetchall()
+                        if myresult != []:
+                            msg = bot.reply_to(message, 'Такой пользователь уже существует! Войдите на сайт по ссылке', reply_markup=webAppKeyboardInline2())
+                        else:
+                            msg = bot.send_message(message, "Как Вас зовут?")
+                            bot.register_next_step_handler(msg, process__name_step)
+                    except Exception as e:
+                        bot.reply_to(message, 'что то не так')
     except Exception as e:
         print(repr(e))
 
+def check(message):
+    try:
+        user_id = message.from_user.id
+        sql = "SELECT * FROM customers WHERE wptelegram_user_id = %s"
+        adr = (user_id, )
+        mycursor.execute(sql, adr)
+        myresult = mycursor.fetchall()
+        if myresult != []:
+            msg = bot.reply_to(message, 'Такой пользователь уже существует! Войдите на сайт по ссылке', reply_markup=webAppKeyboardInline2())
+        else:
+            msg = bot.send_message(message, "Как Вас зовут?")
+            bot.register_next_step_handler(msg, process__name_step)
+    except Exception as e:
+        bot.reply_to(message, 'что то не так')
 #Пользователь отвечает и мы записываем все временно в user_dict, на втором шаге от туда забираем ID и привязываем его к фамилии
 def process__name_step(message):
     try:
