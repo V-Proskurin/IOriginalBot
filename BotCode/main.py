@@ -37,6 +37,10 @@ mycursor = mydb.cursor()
 
 # print(mycursor.rowcount, "record inserted.")
 
+# меняем поле wptelegram_user_id на уникальное
+#mycursor.execute("ALTER TABLE customers ADD UNIQUE (wptelegram_user_id)")
+
+
 #сохраняем данные пользователя вначале в программе как в примере пошагового бота https://github.com/eternnoir/pyTelegramBotAPI/blob/master/examples/step_example.py
 user_dict = {}
 
@@ -122,17 +126,18 @@ def process_last_name_step(message):
 
 # обязательно сделать случайную генерацию почты и если вдруг такая уже есть, то сгенерировать новую.
 # обязательно сделать проверку на то, что пользователь уже есть в базе и если есть, то просто даем ссылку на вход, пусть в админке все правит
+# сейчас только в конце он говорит упс, типа уже такой есть в базе. А надо сразу писать
 # Поле Ник майнкрафт не заполняем автоматом, делаем его уникальным в базе. пусть вводит руками и его проверяем.
 # Поле ID телеграмм тоже делаем уникальным и проверяем в самом начале, что такого пользователя нет в базе
 # Если его нет, только тогда начинаем спрашивать имя и фамилию. В конце кидаем в админку и предлагаем заполнить НИК майнкрафт и прочее
-# Из кода убираем заполнение Ника майнкрафт. 
+# Из кода убираем заполнение Ника майнкрафт.
         sql = "INSERT INTO customers (name, last_name, first_name, user_login, user_nicename, user_email, nickname,  wptelegram_user_id, wptelegram_username) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
         val = (user.name, user.last_name, user.name, message.from_user.username, message.from_user.username, "test@x1team.ru", message.from_user.username, user_id, message.from_user.username)
         mycursor.execute(sql, val)
 
         mydb.commit()
 
-        print(mycursor.rowcount, "record inserted.")
+        #print(mycursor.rowcount, "record inserted.")
 
         msg = bot.reply_to(message, 'Спасибо!', reply_markup=webAppKeyboardInline2())
     except Exception as e:
