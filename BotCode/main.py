@@ -81,26 +81,16 @@ def callback_inline(call):
         if call.message:
             if call.data == "Авторизоваться" or "авторизоваться":
                 print(1)
-                #!!!! Не выполняет дальше эту функцию
-                def check(message):
-                    try:
-                        user_id = message.from_user.id
-                        sql = "SELECT * FROM customers WHERE wptelegram_user_id = %s"
-                        adr = (user_id, )
-                        mycursor.execute(sql, adr)
-                        myresult = mycursor.fetchall()
-                        if myresult != []:
-                            msg = bot.reply_to(message, 'Такой пользователь уже существует! Войдите на сайт по ссылке', reply_markup=webAppKeyboardInline2())
-                        else:
-                            msg = bot.send_message(message, "Как Вас зовут?")
-                            bot.register_next_step_handler(msg, process__name_step)
-                    except Exception as e:
-                        bot.reply_to(message, 'что то не так')
+                # Не идет. Надо здесь почитать https://github.com/eternnoir/pyTelegramBotAPI/blob/master/examples/detailed_example/detailed_example.py
+                msg = bot.send_message(call.message.chat.id, "Проверка")
+                bot.register_next_step_handler(msg, check)
     except Exception as e:
         print(repr(e))
 
+# Проверяем, есть ли такой пользователь
 def check(message):
     try:
+        print(2)
         user_id = message.from_user.id
         sql = "SELECT * FROM customers WHERE wptelegram_user_id = %s"
         adr = (user_id, )
@@ -109,10 +99,11 @@ def check(message):
         if myresult != []:
             msg = bot.reply_to(message, 'Такой пользователь уже существует! Войдите на сайт по ссылке', reply_markup=webAppKeyboardInline2())
         else:
-            msg = bot.send_message(message, "Как Вас зовут?")
+            msg = bot.reply_to(message, "Как Вас зовут?")
             bot.register_next_step_handler(msg, process__name_step)
     except Exception as e:
-        bot.reply_to(message, 'что то не так')
+        bot.reply_to(message, 'Проверка сбойнула')
+
 #Пользователь отвечает и мы записываем все временно в user_dict, на втором шаге от туда забираем ID и привязываем его к фамилии
 def process__name_step(message):
     try:
