@@ -27,6 +27,15 @@ mycursor = mydb.cursor()
 #в таблице обязательно делаем ключ: primary key - номер записи автоматический и добавляем другие поля
 #mycursor.execute("ALTER TABLE customers ADD COLUMN (id INT AUTO_INCREMENT PRIMARY KEY, user_login VARCHAR(255), user_nicename VARCHAR(255), user_email VARCHAR(255), nickname VARCHAR(255), first_name VARCHAR(255), wptelegram_user_id INT, wptelegram_username VARCHAR(255))")
 
+#добавляем пока руками пользователей в локальную БД
+sql = "INSERT INTO customers (name, last_name, first_name, user_login, user_nicename, user_email, nickname,  wptelegram_user_id, wptelegram_username) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+val = ("Вася", "Петров", "Вася", "Vtellogin", "Vtellogin", "Vtellogin@fg.ru", "Vtellogin", "95789544", "Vtellogin")
+mycursor.execute(sql, val)
+
+mydb.commit()
+
+print(mycursor.rowcount, "record inserted.")
+
 #сохраняем данные пользователя вначале в программе как в примере пошагового бота https://github.com/eternnoir/pyTelegramBotAPI/blob/master/examples/step_example.py
 user_dict = {}
 
@@ -80,7 +89,7 @@ def send_welcome(message):
 """)
     bot.register_next_step_handler(msg, process__name_step)
 
-# Пользователь отвечает и мы записываем все в user_dict
+# Пользователь отвечает и мы записываем все временно в user_dict, на втором шаге от туда забираем ID и привязываем его к фамилии
 def process__name_step(message):
     try:
         # chat_id = message.chat.id вместо номера чата поставим номер пользователя
