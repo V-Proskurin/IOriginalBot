@@ -19,6 +19,17 @@ mydb = mysql.connector.connect(
 
 #создаем БД
 mycursor = mydb.cursor()
+
+sql = "SELECT * FROM customers WHERE wptelegram_user_id = %s"
+adr = (837213395, )
+
+mycursor.execute(sql, adr)
+
+myresult = mycursor.fetchall()
+
+for x in myresult:
+    print(x)
+if myresult != "": print("Не пустой")
 #создали БД
 #mycursor.execute("CREATE DATABASE botdb")
 
@@ -72,7 +83,6 @@ def start_fun(message):
     bot.send_message(message.chat.id, 'Привет, ✌️")\nНажми на кнопки внизу.', parse_mode="Markdown",
                      reply_markup=webAppKeyboardInline())  # отправляем сообщение c нужной клавиатурой
 
-
 # Если нажал в первой клавиатуре Авторизоваться, то выполняем логику авторизоваться и после Имя бросаем на второй шаг
 # инструкция пощагового бота https://github.com/eternnoir/pyTelegramBotAPI/blob/master/examples/step_example.py
 @bot.callback_query_handler(func=lambda call: True)
@@ -85,16 +95,7 @@ def callback_inline(call):
     except Exception as e:
         print(repr(e))
 
-
-# Handle '/авторизоваться' '/Авторизоваться'
-@bot.message_handler(commands=['авторизоваться', 'Авторизоваться'])
-def send_welcome(message):
-    msg = bot.reply_to(message, """\
-Как Вас зовут?
-""")
-    bot.register_next_step_handler(msg, process__name_step)
-
-# Пользователь отвечает и мы записываем все временно в user_dict, на втором шаге от туда забираем ID и привязываем его к фамилии
+#Пользователь отвечает и мы записываем все временно в user_dict, на втором шаге от туда забираем ID и привязываем его к фамилии
 def process__name_step(message):
     try:
         # chat_id = message.chat.id вместо номера чата поставим номер пользователя
@@ -106,16 +107,6 @@ def process__name_step(message):
         bot.register_next_step_handler(msg, process_last_name_step)
     except Exception as e:
         bot.reply_to(message, 'oooops')
-
-
-def webAppKeyboardInline2():  # создание inline-клавиатуры с webapp кнопкой
-    keyboard = types.InlineKeyboardMarkup(row_width=1)  # создаем клавиатуру inline
-    webApp = types.WebAppInfo("https://x1team.ru/")
-    one = types.InlineKeyboardButton(text="X1team.ru", web_app=webApp)  # создаем кнопку типа webapp
-    # four = types.InlineKeyboardButton(text="Войти", login_url=)  # получить урл у Андрея
-    keyboard.add(one)  # добавляем кнопку в клавиатуру
-
-    return keyboard  # возвращаем клавиатуру
 
 def process_last_name_step(message):
     try:
@@ -131,7 +122,7 @@ def process_last_name_step(message):
 # Поле ID телеграмм тоже делаем уникальным и проверяем в самом начале, что такого пользователя нет в базе
 # Если его нет, только тогда начинаем спрашивать имя и фамилию. В конце кидаем в админку и предлагаем заполнить НИК майнкрафт и прочее
 # Из кода убираем заполнение Ника майнкрафт.
-        sql = "INSERT INTO customers (name, last_name, first_name, user_login, user_nicename, user_email, nickname,  wptelegram_user_id, wptelegram_username) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        sql = "INSERT INTO customers (name, last_name, first_name, user_login, user_nicename, user_email, nickname, wptelegram_user_id, wptelegram_username) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
         val = (user.name, user.last_name, user.name, message.from_user.username, message.from_user.username, "test@x1team.ru", message.from_user.username, user_id, message.from_user.username)
         mycursor.execute(sql, val)
 
@@ -143,6 +134,31 @@ def process_last_name_step(message):
     except Exception as e:
         bot.reply_to(message, 'oooops')
 
+def webAppKeyboardInline2():  # создание inline-клавиатуры с webapp кнопкой
+    keyboard = types.InlineKeyboardMarkup(row_width=1)  # создаем клавиатуру inline
+    webApp = types.WebAppInfo("https://x1team.ru/")
+    one = types.InlineKeyboardButton(text="X1team.ru", web_app=webApp)  # создаем кнопку типа webapp
+    # four = types.InlineKeyboardButton(text="Войти", login_url=)  # получить урл у Андрея
+    keyboard.add(one)  # добавляем кнопку в клавиатуру
+
+    return keyboard  # возвращаем клавиатуру
+
+# не берет из базы, и надо вставить после того как нажал авторизоваться
+@bot.message_handler(commands=['тест'])
+
+def process__check_step(message):
+    try:
+        user_id = message.from_user.id
+        print(user_id)
+    except Exception as e:
+        print("не пошло")
+        # bot.reply_to(message, 'oooops')
+
+# Handle '/авторизоваться' '/Авторизоваться'
+@bot.message_handler(commands=['авторизоваться', 'Авторизоваться'])
+def send_welcome(message):
+    msg = bot.reply_to(message, "Как Вас зовут?")
+    bot.register_next_step_handler(msg, process__name_step)
 
 # Это какое-то кэширование. Записывает в файл. Возможно надо чистить, а то завалит память мусором.
 # Enable saving next step handlers to file "./.handlers-saves/step.save".
