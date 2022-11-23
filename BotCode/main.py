@@ -144,7 +144,8 @@ def send_welcome(message):
     for x in myresult:
         print(x)
 # !!!!! Не работает проверка, хотя выводит на экран myresult. Идет на else - но пользователь уже есть в базе
-    if myresult == "":
+    if myresult != []:
+        print("уже есть в базе")
         msg = bot.reply_to(message, 'Такой пользователь уже существует! Войдите на сайт по ссылке', reply_markup=webAppKeyboardInline2())
     else:
         msg = bot.reply_to(message, "Как Вас зовут?")
