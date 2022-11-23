@@ -20,16 +20,6 @@ mydb = mysql.connector.connect(
 #создаем БД
 mycursor = mydb.cursor()
 
-sql = "SELECT * FROM customers WHERE wptelegram_user_id = %s"
-adr = (837213395, )
-
-mycursor.execute(sql, adr)
-
-myresult = mycursor.fetchall()
-
-for x in myresult:
-    print(x)
-if myresult != "": print("Не пустой")
 #создали БД
 #mycursor.execute("CREATE DATABASE botdb")
 
@@ -145,14 +135,18 @@ def webAppKeyboardInline2():  # создание inline-клавиатуры с 
 
 # не берет из базы, и надо вставить после того как нажал авторизоваться
 @bot.message_handler(commands=['тест'])
-
 def process__check_step(message):
     try:
         user_id = message.from_user.id
-        print(user_id)
+        sql = "SELECT * FROM customers WHERE wptelegram_user_id = %s"
+        adr = (user_id, )
+
+        mycursor.execute(sql, adr)
+
+        myresult = mycursor.fetchall()
+        if myresult != "": print("Не пустой")
     except Exception as e:
-        print("не пошло")
-        # bot.reply_to(message, 'oooops')
+        bot.reply_to(message, 'не пошло')
 
 # Handle '/авторизоваться' '/Авторизоваться'
 @bot.message_handler(commands=['авторизоваться', 'Авторизоваться'])
