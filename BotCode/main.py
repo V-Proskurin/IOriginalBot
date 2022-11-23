@@ -133,26 +133,19 @@ def webAppKeyboardInline2():  # создание inline-клавиатуры с 
 
     return keyboard  # возвращаем клавиатуру
 
-# не берет из базы, и надо вставить после того как нажал авторизоваться
-@bot.message_handler(commands=['тест'])
-def process__check_step(message):
-    try:
-        user_id = message.from_user.id
-        sql = "SELECT * FROM customers WHERE wptelegram_user_id = %s"
-        adr = (user_id, )
-
-        mycursor.execute(sql, adr)
-
-        myresult = mycursor.fetchall()
-        if myresult != "": print("Не пустой")
-    except Exception as e:
-        bot.reply_to(message, 'не пошло')
-
 # Handle '/авторизоваться' '/Авторизоваться'
 @bot.message_handler(commands=['авторизоваться', 'Авторизоваться'])
 def send_welcome(message):
-    msg = bot.reply_to(message, "Как Вас зовут?")
-    bot.register_next_step_handler(msg, process__name_step)
+    user_id = message.from_user.id
+    sql = "SELECT * FROM customers WHERE wptelegram_user_id = %s"
+    adr = (user_id, )
+    mycursor.execute(sql, adr)
+    myresult = mycursor.fetchall()
+    if myresult == "":
+        msg = bot.reply_to(message, "Как Вас зовут?")
+        bot.register_next_step_handler(msg, process__name_step)
+    else:
+        msg = bot.reply_to(message, 'Такой пользователь уже существует! Войдите на сайт по ссылке', reply_markup=webAppKeyboardInline2())
 
 # Это какое-то кэширование. Записывает в файл. Возможно надо чистить, а то завалит память мусором.
 # Enable saving next step handlers to file "./.handlers-saves/step.save".
