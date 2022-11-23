@@ -141,11 +141,15 @@ def send_welcome(message):
     adr = (user_id, )
     mycursor.execute(sql, adr)
     myresult = mycursor.fetchall()
+    for x in myresult:
+        print(x)
+# !!!!! Не работает проверка, хотя выводит на экран myresult. Идет на else - но пользователь уже есть в базе
     if myresult == "":
+        msg = bot.reply_to(message, 'Такой пользователь уже существует! Войдите на сайт по ссылке', reply_markup=webAppKeyboardInline2())
+    else:
         msg = bot.reply_to(message, "Как Вас зовут?")
         bot.register_next_step_handler(msg, process__name_step)
-    else:
-        msg = bot.reply_to(message, 'Такой пользователь уже существует! Войдите на сайт по ссылке', reply_markup=webAppKeyboardInline2())
+
 
 # Это какое-то кэширование. Записывает в файл. Возможно надо чистить, а то завалит память мусором.
 # Enable saving next step handlers to file "./.handlers-saves/step.save".
