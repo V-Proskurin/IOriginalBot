@@ -24,8 +24,8 @@ mycursor = mydb.cursor()
 #создаем таблицу
 #mycursor.execute("CREATE TABLE customers (name VARCHAR(255), last_name VARCHAR(255))")
 
-#в таблице обязательно делаем ключ: primary key - номер записи автоматический
-mycursor.execute("ALTER TABLE customers ADD COLUMN (id INT AUTO_INCREMENT PRIMARY KEY, user_login VARCHAR(255), user_nicename VARCHAR(255), user_email VARCHAR(255), nickname VARCHAR(255), first_name VARCHAR(255), wptelegram_user_id INT, wptelegram_username VARCHAR(255))")
+#в таблице обязательно делаем ключ: primary key - номер записи автоматический и добавляем другие поля
+#mycursor.execute("ALTER TABLE customers ADD COLUMN (id INT AUTO_INCREMENT PRIMARY KEY, user_login VARCHAR(255), user_nicename VARCHAR(255), user_email VARCHAR(255), nickname VARCHAR(255), first_name VARCHAR(255), wptelegram_user_id INT, wptelegram_username VARCHAR(255))")
 
 #сохраняем данные пользователя вначале в программе как в примере пошагового бота https://github.com/eternnoir/pyTelegramBotAPI/blob/master/examples/step_example.py
 user_dict = {}
