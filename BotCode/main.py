@@ -30,8 +30,10 @@ mycursor = mydb.cursor()
 #создаем таблицу 1
 #в таблице обязательно делаем ключ: primary key - номер записи автоматический и добавляем другие поля
 # wp_users: user_login (vvproskurin логин несменяемый); user_nicename (vvproskurin не используем, но заполняем); user_email (генерим случайный), display_name (vvproskurin заполняем)
-#mycursor.execute("CREATE TABLE wp_users (id INT AUTO_INCREMENT PRIMARY KEY, user_login VARCHAR(255), user_nicename VARCHAR(255), user_email VARCHAR(255), display_name VARCHAR(255))")
+#mycursor.execute("CREATE TABLE wp_users (id INT AUTO_INCREMENT PRIMARY KEY, user_login VARCHAR(60), user_nicename VARCHAR(50), user_email VARCHAR(100), display_name VARCHAR(250))")
 
+#создаем таблицу 2
+#mycursor.execute("CREATE TABLE wp_usermeta (id INT AUTO_INCREMENT PRIMARY KEY, user_id BIGINT(20), meta_key VARCHAR(255), meta_value LONGTEXT)")
 
 #добавляем пока руками пользователей в локальную БД
 # sql = "INSERT INTO customers (name, last_name, first_name, user_login, user_nicename, user_email, nickname,  wptelegram_user_id, wptelegram_username) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
