@@ -12,26 +12,26 @@ mydb = mysql.connector.connect(
   user="bot",
   password="bot123",
   port="3306",
-  database="botdb"
+  database="wp_base"
 )
-#создаем БД
 mycursor = mydb.cursor()
+
 # проверка, что к базе подключился
 #print(mydb)
 
 #создали БД
-#mycursor.execute("CREATE DATABASE botdb")
-
+#mycursor.execute("CREATE DATABASE wp_base")
 
 # !!!!! Надо новых две создать таблицы
-# wp_users: user_login (vvproskurin логин несменяемый); user_nicename (vvproskurin не используем, но заполняем); user_email (генерим случайный), display_name (vvproskurin заполняем),
 # wp_usermeta: nickname (VVP игровой ник), first_name (Виктор - заполняем и смотрим в телеге, если есть), last_name (Проскурин заполняем тем, что есть в телеге, если нет, ставим пусто), wptelegram_user_id (заполняем), wptelegram_username (VVProskurin), billing_first_name (Виктор заполняем из телеги), billing_last_name (Проскурин заполняем из телеги), billing_email (генерим)
+# и взять все по максимум из телеграмм https://core.telegram.org/bots/api#user
+# Проверяем на бота и если бот, то не регестрируем message.from_user.is_bot
 
-#создаем таблицу
-#mycursor.execute("CREATE TABLE customers (name VARCHAR(255), last_name VARCHAR(255))")
-
+#создаем таблицу 1
 #в таблице обязательно делаем ключ: primary key - номер записи автоматический и добавляем другие поля
-#mycursor.execute("ALTER TABLE customers ADD COLUMN (id INT AUTO_INCREMENT PRIMARY KEY, user_login VARCHAR(255), user_nicename VARCHAR(255), user_email VARCHAR(255), nickname VARCHAR(255), first_name VARCHAR(255), wptelegram_user_id INT, wptelegram_username VARCHAR(255))")
+# wp_users: user_login (vvproskurin логин несменяемый); user_nicename (vvproskurin не используем, но заполняем); user_email (генерим случайный), display_name (vvproskurin заполняем)
+#mycursor.execute("CREATE TABLE wp_users (id INT AUTO_INCREMENT PRIMARY KEY, user_login VARCHAR(255), user_nicename VARCHAR(255), user_email VARCHAR(255), display_name VARCHAR(255))")
+
 
 #добавляем пока руками пользователей в локальную БД
 # sql = "INSERT INTO customers (name, last_name, first_name, user_login, user_nicename, user_email, nickname,  wptelegram_user_id, wptelegram_username) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
@@ -58,25 +58,25 @@ class User:
 # С сайтом может работать несколько ботов, поэтому не у бота пользователей храним, а на сайте.
 # Дальше при любом входе к боту смотрим, если пользователя нет в базе вордпресс, то добавляем его в базу.
 # Это проверка:
-@bot.message_handler(func=lambda message: True)
-def check_user(message):
-    try:
-        user_id = message.from_user.id
-        sql = "SELECT * FROM customers WHERE wptelegram_user_id = %s"
-        adr = (user_id, )
-        mycursor.execute(sql, adr)
-        myresult = mycursor.fetchall()
-        if myresult != []:
-            user_id = message.from_user.id
-        else:
+# @bot.message_handler(func=lambda message: True)
+# def check_user(message):
+#     try:
+#         user_id = message.from_user.id
+#         sql = "SELECT * FROM customers WHERE wptelegram_user_id = %s"
+#         adr = (user_id, )
+#         mycursor.execute(sql, adr)
+#         myresult = mycursor.fetchall()
+#         if myresult != []:
+#             user_id = message.from_user.id
+#         else:
 
-            sql = "INSERT INTO customers (name, last_name, first_name, user_login, user_nicename, user_email, nickname, wptelegram_user_id, wptelegram_username) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
-            val = (user.name, user.last_name, user.name, message.from_user.username, message.from_user.username, "test@x1team.ru", message.from_user.username, user_id, message.from_user.username)
-            mycursor.execute(sql, val)
-            mydb.commit()
+#             sql = "INSERT INTO customers (name, last_name, first_name, user_login, user_nicename, user_email, nickname, wptelegram_user_id, wptelegram_username) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+#             val = (user.name, user.last_name, user.name, message.from_user.username, message.from_user.username, "test@x1team.ru", message.from_user.username, user_id, message.from_user.username)
+#             mycursor.execute(sql, val)
+#             mydb.commit()
 
-    except Exception as e:
-        print(repr(e))
+#     except Exception as e:
+#         print(repr(e))
 
 
 # Эта клавиатура появляется при старте. Сюда надо добавить кнопку для авторизации на сайте, разобраться как работает
