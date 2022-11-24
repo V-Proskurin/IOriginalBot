@@ -35,11 +35,6 @@ mycursor = mydb.cursor()
 #создаем таблицу 2
 #mycursor.execute("CREATE TABLE wp_usermeta (id INT AUTO_INCREMENT PRIMARY KEY, user_id BIGINT(20), meta_key VARCHAR(255), meta_value LONGTEXT)")
 
-#добавляем пока руками пользователей в локальную БД
-# sql = "INSERT INTO customers (name, last_name, first_name, user_login, user_nicename, user_email, nickname,  wptelegram_user_id, wptelegram_username) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
-# val = ("Вася", "Петров", "Вася", "Vtellogin", "Vtellogin", "Vtellogin@fg.ru", "Vtellogin", "95789544", "Vtellogin")
-# mycursor.execute(sql, val)
-
 # mydb.commit()
 
 # print(mycursor.rowcount, "record inserted.")
