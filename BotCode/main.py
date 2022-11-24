@@ -22,6 +22,11 @@ mycursor = mydb.cursor()
 #создали БД
 #mycursor.execute("CREATE DATABASE botdb")
 
+
+# !!!!! Надо новых две создать таблицы
+# wp_users: user_login (vvproskurin логин несменяемый); user_nicename (vvproskurin не используем, но заполняем); user_email (генерим случайный), display_name (vvproskurin заполняем),
+# wp_usermeta: nickname (VVP игровой ник), first_name (Виктор - заполняем и смотрим в телеге, если есть), last_name (Проскурин заполняем тем, что есть в телеге, если нет, ставим пусто), wptelegram_user_id (заполняем), wptelegram_username (VVProskurin), billing_first_name (Виктор заполняем из телеги), billing_last_name (Проскурин заполняем из телеги), billing_email (генерим)
+
 #создаем таблицу
 #mycursor.execute("CREATE TABLE customers (name VARCHAR(255), last_name VARCHAR(255))")
 
@@ -64,8 +69,12 @@ def check_user(message):
         if myresult != []:
             user_id = message.from_user.id
         else:
-            msg = bot.reply_to(message, "Как Вас зовут?")
-            bot.register_next_step_handler(msg, process__name_step)
+
+            sql = "INSERT INTO customers (name, last_name, first_name, user_login, user_nicename, user_email, nickname, wptelegram_user_id, wptelegram_username) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            val = (user.name, user.last_name, user.name, message.from_user.username, message.from_user.username, "test@x1team.ru", message.from_user.username, user_id, message.from_user.username)
+            mycursor.execute(sql, val)
+            mydb.commit()
+
     except Exception as e:
         print(repr(e))
 
@@ -87,15 +96,14 @@ def webAppKeyboardInline():  # создание inline-клавиатуры с w
 
     return keyboard  # возвращаем клавиатуру
 
-
+# !!! Надо добавление в базу сделать на старте и проверку на наличие в базе. Если есть даем ссылку на ЛК для правки ФИО
 @bot.message_handler(commands=['start'])  # обрабатываем команду старт
 def start_fun(message):
     bot.send_message(message.chat.id, 'Привет, ✌️")\nНажми на кнопки внизу.', parse_mode="Markdown",
                      reply_markup=webAppKeyboardInline())  # отправляем сообщение c нужной клавиатурой
 
-# Если нажал в первой клавиатуре Авторизоваться, то выполняем логику авторизоваться и после Имя бросаем на второй шаг
+# Если нажал в первой клавиатуре Регистрация, то выполняем логику авторизоваться и после Имя бросаем на второй шаг
 # инструкция пощагового бота https://github.com/eternnoir/pyTelegramBotAPI/blob/master/examples/step_example.py
-# !!!! Надо переименовать в регистрация
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
     try:
