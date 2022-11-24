@@ -3,7 +3,7 @@ import mysql.connector
 from telebot import types
 from telebot.types import ReplyKeyboardMarkup
 
-# надо файл конфиг сделать https://snippcode.ru/telegram-bot-python-pytelegrambotapi
+# !!!!! надо файл конфиг сделать https://snippcode.ru/telegram-bot-python-pytelegrambotapi
 token = '5246882341:AAHdcgZKCKvytKWR1-IyP8Pl6jkmBiIcJRU'
 bot = telebot.TeleBot(token)
 
@@ -14,11 +14,10 @@ mydb = mysql.connector.connect(
   port="3306",
   database="botdb"
 )
-# проверка, что к базе подключился
-#print(mydb)
-
 #создаем БД
 mycursor = mydb.cursor()
+# проверка, что к базе подключился
+#print(mydb)
 
 #создали БД
 #mycursor.execute("CREATE DATABASE botdb")
@@ -50,6 +49,27 @@ class User:
         self.name = name
         self.last_name = None
 
+# Добавляем любого пользователя в вордпресс при заходе по старту. Сразу  регистрируем.
+# С сайтом может работать несколько ботов, поэтому не у бота пользователей храним, а на сайте.
+# Дальше при любом входе к боту смотрим, если пользователя нет в базе вордпресс, то добавляем его в базу.
+# Это проверка:
+@bot.message_handler(func=lambda message: True)
+def check_user(message):
+    try:
+        user_id = message.from_user.id
+        sql = "SELECT * FROM customers WHERE wptelegram_user_id = %s"
+        adr = (user_id, )
+        mycursor.execute(sql, adr)
+        myresult = mycursor.fetchall()
+        if myresult != []:
+            user_id = message.from_user.id
+        else:
+            msg = bot.reply_to(message, "Как Вас зовут?")
+            bot.register_next_step_handler(msg, process__name_step)
+    except Exception as e:
+        print(repr(e))
+
+
 # Эта клавиатура появляется при старте. Сюда надо добавить кнопку для авторизации на сайте, разобраться как работает
 # https://t.me/x1test1Bot вот здесь описание
 
@@ -80,29 +100,10 @@ def callback_inline(call):
     try:
         if call.message:
             if call.data == "Авторизоваться" or "авторизоваться":
-                print(1)
-                # Не идет. Надо здесь почитать https://github.com/eternnoir/pyTelegramBotAPI/blob/master/examples/detailed_example/detailed_example.py
-                msg = bot.send_message(call.message.chat.id, "Проверка")
-                bot.register_next_step_handler(msg, check)
+                msg = bot.send_message(call.message.chat.id, "Введите имя")
+                bot.register_next_step_handler(msg, process__name_step)
     except Exception as e:
         print(repr(e))
-
-# Проверяем, есть ли такой пользователь
-def check(message):
-    try:
-        print(2)
-        user_id = message.from_user.id
-        sql = "SELECT * FROM customers WHERE wptelegram_user_id = %s"
-        adr = (user_id, )
-        mycursor.execute(sql, adr)
-        myresult = mycursor.fetchall()
-        if myresult != []:
-            msg = bot.reply_to(message, 'Такой пользователь уже существует! Войдите на сайт по ссылке', reply_markup=webAppKeyboardInline2())
-        else:
-            msg = bot.reply_to(message, "Как Вас зовут?")
-            bot.register_next_step_handler(msg, process__name_step)
-    except Exception as e:
-        bot.reply_to(message, 'Проверка сбойнула')
 
 #Пользователь отвечает и мы записываем все временно в user_dict, на втором шаге от туда забираем ID и привязываем его к фамилии
 def process__name_step(message):
