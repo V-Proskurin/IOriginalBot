@@ -80,7 +80,7 @@ def webAppKeyboardInline():  # создание inline-клавиатуры с w
     webAppGame = types.WebAppInfo("https://games.mihailgok.ru")  # создаем webappinfo - формат хранения url
     one = types.InlineKeyboardButton(text="X1team.ru", web_app=webApp)  # создаем кнопку типа webapp
     two = types.InlineKeyboardButton(text="Игра", web_app=webAppGame)  # создаем кнопку типа webapp
-    three = types.InlineKeyboardButton(text="Авторизоваться", callback_data="Авторизоваться")  # работает, не запускает команду
+    three = types.InlineKeyboardButton(text="Регистрация", callback_data="Регистрация")  # работает, не запускает команду
     four = types.InlineKeyboardButton(text="Твои данные на сайте", web_app=webApp2)
     # four = types.InlineKeyboardButton(text="Войти", login_url=)  # получить урл у Андрея
     keyboard.add(one, two, three, four)  # добавляем кнопку в клавиатуру
@@ -95,11 +95,12 @@ def start_fun(message):
 
 # Если нажал в первой клавиатуре Авторизоваться, то выполняем логику авторизоваться и после Имя бросаем на второй шаг
 # инструкция пощагового бота https://github.com/eternnoir/pyTelegramBotAPI/blob/master/examples/step_example.py
+# !!!! Надо переименовать в регистрация
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
     try:
         if call.message:
-            if call.data == "Авторизоваться" or "авторизоваться":
+            if call.data == "Регистрация" or "регистрация":
                 msg = bot.send_message(call.message.chat.id, "Введите имя")
                 bot.register_next_step_handler(msg, process__name_step)
     except Exception as e:
@@ -116,7 +117,7 @@ def process__name_step(message):
         msg = bot.reply_to(message, "Введите фамилию")
         bot.register_next_step_handler(msg, process_last_name_step)
     except Exception as e:
-        bot.reply_to(message, 'oooops')
+        bot.reply_to(message, 'Что то пошло не так, попробуйте еще раз, пожалуйста')
 
 def process_last_name_step(message):
     try:
@@ -126,12 +127,8 @@ def process_last_name_step(message):
         user.last_name = last_name
 
 # обязательно сделать случайную генерацию почты и если вдруг такая уже есть, то сгенерировать новую.
-# обязательно сделать проверку на то, что пользователь уже есть в базе и если есть, то просто даем ссылку на вход, пусть в админке все правит
-# сейчас только в конце он говорит упс, типа уже такой есть в базе. А надо сразу писать
-# Поле Ник майнкрафт не заполняем автоматом, делаем его уникальным в базе. пусть вводит руками и его проверяем.
-# Поле ID телеграмм тоже делаем уникальным и проверяем в самом начале, что такого пользователя нет в базе
-# Если его нет, только тогда начинаем спрашивать имя и фамилию. В конце кидаем в админку и предлагаем заполнить НИК майнкрафт и прочее
-# Из кода убираем заполнение Ника майнкрафт.
+# Из кода убираем заполнение Ника майнкрафт. Пусть вводит руками на сайте, когда играть захочет.
+# Даем ссылку на ЛК. Пусть там все редактирует.
         sql = "INSERT INTO customers (name, last_name, first_name, user_login, user_nicename, user_email, nickname, wptelegram_user_id, wptelegram_username) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
         val = (user.name, user.last_name, user.name, message.from_user.username, message.from_user.username, "test@x1team.ru", message.from_user.username, user_id, message.from_user.username)
         mycursor.execute(sql, val)
@@ -142,7 +139,7 @@ def process_last_name_step(message):
 
         msg = bot.reply_to(message, 'Спасибо!', reply_markup=webAppKeyboardInline2())
     except Exception as e:
-        bot.reply_to(message, 'oooops')
+        bot.reply_to(message, 'Что то пошло не так, попробуйте еще раз, пожалуйста')
 
 def webAppKeyboardInline2():  # создание inline-клавиатуры с webapp кнопкой
     keyboard = types.InlineKeyboardMarkup(row_width=1)  # создаем клавиатуру inline
