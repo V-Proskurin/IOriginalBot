@@ -16,16 +16,20 @@ mydb = mysql.connector.connect(
 )
 mycursor = mydb.cursor()
 
+
+## !!!!! https://python-scripts.com/requests разобраться как работает
+
 # проверка, что к базе подключился
-#print(mydb)
+# print(mydb)
+
+# Как работать с БД https://www.w3schools.com/python/python_mysql_where.asp
 
 #создали БД
 #mycursor.execute("CREATE DATABASE wp_base")
 
-# !!!!! Надо новых две создать таблицы
+# Надо новых две создать таблицы
 # wp_usermeta: nickname (VVP игровой ник), first_name (Виктор - заполняем и смотрим в телеге, если есть), last_name (Проскурин заполняем тем, что есть в телеге, если нет, ставим пусто), wptelegram_user_id (заполняем), wptelegram_username (VVProskurin), billing_first_name (Виктор заполняем из телеги), billing_last_name (Проскурин заполняем из телеги), billing_email (генерим)
 # и взять все по максимум из телеграмм https://core.telegram.org/bots/api#user
-# Проверяем на бота и если бот, то не регестрируем message.from_user.is_bot
 
 #создаем таблицу 1
 #в таблице обязательно делаем ключ: primary key - номер записи автоматический и добавляем другие поля
@@ -34,14 +38,6 @@ mycursor = mydb.cursor()
 
 #создаем таблицу 2
 #mycursor.execute("CREATE TABLE wp_usermeta (id INT AUTO_INCREMENT PRIMARY KEY, user_id BIGINT(20), meta_key VARCHAR(255), meta_value LONGTEXT)")
-
-# mydb.commit()
-
-# print(mycursor.rowcount, "record inserted.")
-
-# меняем поле wptelegram_user_id на уникальное
-#mycursor.execute("ALTER TABLE customers ADD UNIQUE (wptelegram_user_id)")
-
 
 #сохраняем данные пользователя вначале в программе как в примере пошагового бота https://github.com/eternnoir/pyTelegramBotAPI/blob/master/examples/step_example.py
 user_dict = {}
@@ -53,13 +49,36 @@ class User:
 
 # Добавляем любого пользователя в вордпресс при заходе по старту. Сразу  регистрируем.
 # С сайтом может работать несколько ботов, поэтому не у бота пользователей храним, а на сайте.
-# Дальше при любом входе к боту смотрим, если пользователя нет в базе вордпресс, то добавляем его в базу.
+# Дальше при любом входе к боту смотрим у бота он был недавно?, если нет, то смотрим в базе, если пользователя нет в базе вордпресс, то добавляем его в базу с ФИО и данными из телеги
+# Когда ему надо будет он потом по ссылке зайдет в ЛК и поправит ФИО, телефон, почту, адреса и прочее
+# !!!! wptelegram_user_id это не поле, а значение. Уникальным сделать нельзя. Поэтому обязательная проверка перед добавлением
+# !!!! Проверяем на бота и если бот, то не регестрируем message.from_user.is_bot
+# !!!! Всегда проверяем у бота он был недавно? После проверки в базе данных и записи ее надо закончить, записав в сеанс переменную, что недавно был и не проверять повторно. Потом можно сеанс очистить. Это нужно, если вдруг из базы сайта его удалили, чтобы заново добавить
+# !!!! Генерим почту
+# !!!! разобраться как на мультисайт его добавлять, чтобы и там числился
+
+# !!!!!! Как вообще правильно? Задача проверить есть ли в таблице wp_usermeta в столбце meta_key со значением wptelegram_user_id пользователь с конкретным значением равнум его id, который телега отдает: message.from_user.id
+# Есть статья https://misha.agency/wordpress/interfacing-with-the-database.html
+# И еще мануал простой Как работать с БД https://www.w3schools.com/python/python_mysql_where.asp
+# Я по нему начал учиться:
+# sql = "SELECT * FROM wp_usermeta WHERE meta_key = wptelegram_user_id and meta_value = user_id" Так можно?
+# Но надо, чтобы как в примере с параметром для безопасности WHERE meta_key = %s:
+# sql = "SELECT * FROM wp_usermeta WHERE meta_key = %s"
+# meta_key = ("wptelegram_user_id", )
+# mycursor.execute(sql, meta_key)
+# myresult = mycursor.fetchall()
+# for x in myresult:
+#   if ....... и как дальше?
+
+# wp_users: user_login (vvproskurin логин несменяемый); user_nicename (vvproskurin не используем, но заполняем); user_email (генерим случайный), display_name (vvproskurin заполняем)
+# wp_usermeta: nickname (VVP игровой ник), first_name (Виктор - заполняем и смотрим в телеге, если есть), last_name (Проскурин заполняем тем, что есть в телеге, если нет, ставим пусто), wptelegram_user_id (заполняем), wptelegram_username (VVProskurin), billing_first_name (Виктор заполняем из телеги), billing_last_name (Проскурин заполняем из телеги), billing_email (генерим)
+
 # Это проверка:
 # @bot.message_handler(func=lambda message: True)
 # def check_user(message):
 #     try:
 #         user_id = message.from_user.id
-#         sql = "SELECT * FROM customers WHERE wptelegram_user_id = %s"
+#         sql = "SELECT * FROM wp_usermeta WHERE wptelegram_user_id = %s"
 #         adr = (user_id, )
 #         mycursor.execute(sql, adr)
 #         myresult = mycursor.fetchall()
@@ -93,7 +112,7 @@ def webAppKeyboardInline():  # создание inline-клавиатуры с w
 
     return keyboard  # возвращаем клавиатуру
 
-# !!! Надо добавление в базу сделать на старте и проверку на наличие в базе. Если есть даем ссылку на ЛК для правки ФИО
+# !!! Надо добавление в базу сделать на старте и проверку на наличие в базе. Если есть даем ссылку на ЛК для правки ФИО, телефона, адреса доставки
 @bot.message_handler(commands=['start'])  # обрабатываем команду старт
 def start_fun(message):
     bot.send_message(message.chat.id, 'Привет, ✌️")\nНажми на кнопки внизу.', parse_mode="Markdown",
