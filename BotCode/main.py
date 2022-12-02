@@ -20,7 +20,7 @@ mycursor = mydb.cursor()
 ## !!!!! https://python-scripts.com/requests разобраться как работает
 
 # проверка, что к базе подключился
-# print(mydb)
+#print(mydb)
 
 # Как работать с БД https://www.w3schools.com/python/python_mysql_where.asp
 
@@ -153,8 +153,8 @@ def process_last_name_step(message):
 # обязательно сделать случайную генерацию почты и если вдруг такая уже есть, то сгенерировать новую.
 # Из кода убираем заполнение Ника майнкрафт. Пусть вводит руками на сайте, когда играть захочет.
 # Даем ссылку на ЛК. Пусть там все редактирует.
-        sql = "INSERT INTO customers (name, last_name, first_name, user_login, user_nicename, user_email, nickname, wptelegram_user_id, wptelegram_username) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
-        val = (user.name, user.last_name, user.name, message.from_user.username, message.from_user.username, "test@x1team.ru", message.from_user.username, user_id, message.from_user.username)
+        sql = "INSERT INTO wp_users (user_login, user_nicename, user_email, display_name ) VALUES (%s, %s, %s, %s)"
+        val = (message.from_user.username, message.from_user.username, 123, message.from_user.username)
         mycursor.execute(sql, val)
 
         mydb.commit()
@@ -163,7 +163,7 @@ def process_last_name_step(message):
 
         msg = bot.reply_to(message, 'Спасибо!', reply_markup=webAppKeyboardInline2())
     except Exception as e:
-        bot.reply_to(message, 'Что то пошло не так, попробуйте еще раз, пожалуйста')
+        bot.reply_to(message, 'Что то пошло не так, попробуйте еще раз, пожалуйста!!!')
 
 def webAppKeyboardInline2():  # создание inline-клавиатуры с webapp кнопкой
     keyboard = types.InlineKeyboardMarkup(row_width=1)  # создаем клавиатуру inline
