@@ -102,7 +102,7 @@ def webAppKeyboardInline():  # создание inline-клавиатуры с w
     keyboard = types.InlineKeyboardMarkup(row_width=1)  # создаем клавиатуру inline
     webApp = types.WebAppInfo("https://x1team.ru/")
     webApp2 = types.WebAppInfo("https://telegram.mihailgok.ru") # создаем webappinfo - формат хранения url https://telegram.mihailgok.ru
-    webAppGame = types.WebAppInfo("https://games.mihailgok.ru")  # создаем webappinfo - формат хранения url
+    webAppGame = types.WebAppInfo("https://demos.gleamtech.com/filevista/")  # создаем webappinfo - формат хранения url
     one = types.InlineKeyboardButton(text="X1team.ru", web_app=webApp)  # создаем кнопку типа webapp
     two = types.InlineKeyboardButton(text="Игра", web_app=webAppGame)  # создаем кнопку типа webapp
     three = types.InlineKeyboardButton(text="Регистрация", callback_data="Регистрация")  # работает, не запускает команду
