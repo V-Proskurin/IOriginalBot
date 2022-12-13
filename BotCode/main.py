@@ -4,7 +4,7 @@ from telebot import types
 from telebot.types import ReplyKeyboardMarkup
 
 # !!!!! надо файл конфиг сделать https://snippcode.ru/telegram-bot-python-pytelegrambotapi
-token = '5246882341:AAHdcgZKCKvytKWR1-IyP8Pl6jkmBiIcJRU'
+token = '5437003366:AAGxz3jzfF8YlWlJGe47bz1QJAKddeLFxNE'
 bot = telebot.TeleBot(token)
 
 mydb = mysql.connector.connect(
@@ -100,10 +100,12 @@ class User:
 
 def webAppKeyboardInline():  # создание inline-клавиатуры с webapp кнопкой
     keyboard = types.InlineKeyboardMarkup(row_width=1)  # создаем клавиатуру inline
-    webApp = types.WebAppInfo("https://x1team.ru/")
+    login_url = types.LoginUrl(url = "https://x1team.ru?action=wptelegram_login", request_write_access = True)
+    #webApp = types.WebAppInfo("https://x1team.ru?action=wptelegram_login")
     webApp2 = types.WebAppInfo("https://telegram.mihailgok.ru") # создаем webappinfo - формат хранения url https://telegram.mihailgok.ru
     webAppGame = types.WebAppInfo("https://demos.gleamtech.com/filevista/")  # создаем webappinfo - формат хранения url
-    one = types.InlineKeyboardButton(text="X1team.ru", web_app=webApp)  # создаем кнопку типа webapp
+    one = types.InlineKeyboardButton(text="X1team.ru", login_url=login_url)  # создаем кнопку типа login_url
+    #one = types.InlineKeyboardButton(text="X1team.ru", web_app=webApp)  # создаем кнопку типа webapp
     two = types.InlineKeyboardButton(text="Игра", web_app=webAppGame)  # создаем кнопку типа webapp
     three = types.InlineKeyboardButton(text="Регистрация", callback_data="Регистрация")  # работает, не запускает команду
     four = types.InlineKeyboardButton(text="Твои данные на сайте", web_app=webApp2)
